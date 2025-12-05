@@ -7,12 +7,12 @@ on:
 
 jobs:
   build:
-    runs-on: macos-14 # Uses Apple Silicon
+    runs-on: macos-14
     
     steps:
     - uses: actions/checkout@v4
 
-    # NEW STEP: Force the environment to use .NET 8.0 SDK and ignore .NET 10
+    # Force .NET 8 SDK to avoid .NET 10 Preview conflicts
     - name: Create global.json
       run: |
         echo '{"sdk":{"version": "8.0.400", "rollForward": "latestFeature"}}' > global.json
@@ -28,33 +28,24 @@ jobs:
     - name: Restore Dependencies
       run: dotnet restore
 
-    # 1. Publish the App (Generates the .app file)
+    # Publish with Trimming DISABLED to fix Xcode 15/iOS 18 mismatch
     - name: Publish .NET MAUI iOS
       run: |
         dotnet publish -f net8.0-ios -c Release -r ios-arm64 \
         -p:ArchiveOnBuild=false \
         -p:EnableCodeSigning=false \
-        -p:_RequiresIpaSigning=false
+        -p:_RequiresIpaSigning=false \
+        -p:PublishTrimmed=false \
+        -p:MtouchLink=None
 
-    # 2. Create the IPA structure manually
     - name: Package into IPA
       run: |
-        # Find the generated .app file
         cd bin/Release/net8.0-ios/ios-arm64/publish/
-        
-        # Create Payload folder
         mkdir Payload
-        
-        # Move the .app into Payload
         mv *.app Payload/
-        
-        # Zip it up to create the IPA
         zip -r MauiScraperApp.ipa Payload
-        
-        # Move it to a known location for upload
         mv MauiScraperApp.ipa ../../../../../
 
-    # 3. Upload the IPA
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
