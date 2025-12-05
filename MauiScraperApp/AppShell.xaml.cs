@@ -1,4 +1,3 @@
-﻿// AppShell.xaml.cs
 namespace MauiScraperApp;
 
 public partial class AppShell : Shell
@@ -7,8 +6,8 @@ public partial class AppShell : Shell
     {
         InitializeComponent();
         
-        // Register routes for navigation
-        Routing.RegisterRoute("Connection", typeof(Views.ConnectionView));
-        Routing.RegisterRoute("MainTabs", typeof(AppShell));
+        // FIX: Removed manual Route Registration. 
+        // The Routes are already defined in AppShell.xaml.
+        // Registering them here again causes conflicts on iOS.
     }
 }
