@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MauiScraperApp.ViewModels"
+             xmlns:models="clr-namespace:MauiScraperApp.Models"
+             x:Class="MauiScraperApp.Views.SearchView"
+             x:DataType="viewmodels:SearchViewModel"
+             Title="Search">
+
+    <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, *" Padding="10">
+
+        <!-- Connection Status Bar -->
+        <Frame Grid.Row="0" 
+               Padding="10" 
+               Margin="0,0,0,5"
+               CornerRadius="5"
+               BackgroundColor="{Binding IsConnected, Converter={StaticResource ConnectionStatusColorConverter}}"
+               HasShadow="False">
+            <Grid ColumnDefinitions="Auto, *, Auto">
+                <Label Grid.Column="0"
+                       Text="{Binding IsConnected, Converter={StaticResource ConnectionStatusIconConverter}}"
+                       FontSize="16"
+                       VerticalOptions="Center"
+                       Margin="0,0,10,0"/>
+                <Label Grid.Column="1"
+                       Text="{Binding IsConnected, Converter={StaticResource ConnectionStatusTextConverter}}"
+                       TextColor="White"
+                       VerticalOptions="Center"/>
+                <Button Grid.Column="2"
+                        Text="Connect"
+                        Command="{Binding CheckConnectionCommand}"
+                        BackgroundColor="White"
+                        TextColor="{StaticResource Primary}"
+                        FontSize="12"
+                        Padding="10,5"
+                        IsVisible="{Binding IsConnected, Converter={StaticResource InverseBoolConverter}}"/>
+            </Grid>
+        </Frame>
+
+        <!-- Category Picker -->
+        <Picker Grid.Row="1"
+                Title="Select Category"
+                ItemsSource="{Binding Categories}"
+                SelectedItem="{Binding SelectedCategory}"
+                Margin="0,0,0,5"/>
+
+        <!-- Sort Options Picker -->
+        <Picker Grid.Row="2"
+                Title="Sort By"
+                ItemsSource="{Binding SortOptions}"
+                SelectedItem="{Binding SelectedSortOption}"
+                Margin="0,0,0,5"/>
+
+        <!-- Search Bar -->
+        <SearchBar Grid.Row="3"
+                   Placeholder="Enter search term..."
+                   Text="{Binding SearchQuery}"
+                   SearchCommand="{Binding PerformSearchCommand}"
+                   Margin="0,0,0,10"/>
+        
+        <!-- Loading Indicator -->
+        <ActivityIndicator Grid.Row="4"
+                           IsRunning="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           Margin="0,10" />
+
+        <!-- Results List -->
+        <CollectionView Grid.Row="5"
+                        ItemsSource="{Binding Results}"
+                        IsVisible="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}"
+                        SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:SearchResult">
+                    <Frame Padding="10" Margin="0,5" CornerRadius="5" BorderColor="LightGray">
+                        <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="*, Auto">
+                            <!-- Title -->
+                            <Label Grid.Row="0" Grid.Column="0" 
+                                   Text="{Binding Title}" 
+                                   FontSize="Medium" 
+                                   FontAttributes="Bold" 
+                                   LineBreakMode="WordWrap"/>
+                            
+                            <!-- Size Info -->
+                            <VerticalStackLayout Grid.Row="1" Grid.Column="0" 
+                                               Spacing="5" 
+                                               Padding="0,5,0,0">
+                                <Label FontSize="Small">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Size: " FontAttributes="Bold"/>
+                                            <Span Text="{Binding Size}"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                            </VerticalStackLayout>
+                            
+                            <!-- Seeds and Leeches -->
+                            <VerticalStackLayout Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" 
+                                               Spacing="5" 
+                                               VerticalOptions="Center">
+                                <Label>
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Seeds: " FontAttributes="Bold" TextColor="Green"/>
+                                            <Span Text="{Binding Seeds}" TextColor="Green"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label>
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Leeches: " FontAttributes="Bold" TextColor="Red"/>
+                                            <Span Text="{Binding Leeches}" TextColor="Red"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                            </VerticalStackLayout>
+
+                            <!-- Send to PC Button -->
+                            <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                    Text="📥 Send to PC"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:SearchViewModel}}, Path=SendToRemoteCommand}"
+                                    CommandParameter="{Binding .}"
+                                    BackgroundColor="{StaticResource Primary}"
+                                    TextColor="White"
+                                    Margin="0,5,0,0"
+                                    HeightRequest="45"
+                                    FontSize="16"
+                                    FontAttributes="Bold"/>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            
+            <!-- Load More Footer -->
+            <CollectionView.Footer>
+                <Grid Padding="10" IsVisible="{Binding HasResults}">
+                    <Button Text="Load More Results"
+                            Command="{Binding LoadMoreCommand}"
+                            IsEnabled="{Binding IsLoadingMore, Converter={StaticResource InverseBoolConverter}}"
+                            BackgroundColor="#2196F3"
+                            TextColor="White"
+                            HeightRequest="45"/>
+                    
+                    <ActivityIndicator IsRunning="{Binding IsLoadingMore}"
+                                     IsVisible="{Binding IsLoadingMore}"
+                                     HorizontalOptions="Center"
+                                     VerticalOptions="Center"/>
+                </Grid>
+            </CollectionView.Footer>
+        </CollectionView>
+
+    </Grid>
+</ContentPage>

@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:MauiScraperApp"
+             xmlns:converters="clr-namespace:MauiScraperApp.Converters"
+             x:Class="MauiScraperApp.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            
+            <!-- Register all converters -->
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <converters:StringNotEmptyConverter x:Key="StringNotEmptyConverter" />
+            <converters:CountToBoolConverter x:Key="CountToBoolConverter" />
+            <converters:ConnectionStatusColorConverter x:Key="ConnectionStatusColorConverter" />
+            <converters:ConnectionStatusIconConverter x:Key="ConnectionStatusIconConverter" />
+            <converters:ConnectionStatusTextConverter x:Key="ConnectionStatusTextConverter" />
+            <converters:StateToColorConverter x:Key="StateToColorConverter" />
+            <converters:StateToButtonTextConverter x:Key="StateToButtonTextConverter" />
+            <converters:StateToPausedConverter x:Key="StateToPausedConverter" />
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

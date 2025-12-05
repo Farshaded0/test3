@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MauiScraperApp.ViewModels"
+             xmlns:services="clr-namespace:MauiScraperApp.Services"
+             x:Class="MauiScraperApp.Views.DownloadsView"
+             x:DataType="viewmodels:DownloadsViewModel"
+             Title="Downloads">
+
+    <Grid RowDefinitions="Auto, *" Padding="10">
+
+        <!-- Header with Status -->
+        <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="0,0,0,10">
+            <Label Grid.Column="0"
+                   Text="{Binding StatusMessage}"
+                   FontSize="16"
+                   VerticalOptions="Center"
+                   TextColor="Gray"/>
+            
+            <Button Grid.Column="1"
+                    Text="🔄"
+                    Command="{Binding RefreshDownloadsCommand}"
+                    WidthRequest="50"
+                    HeightRequest="50"
+                    CornerRadius="25"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"
+                    FontSize="20"/>
+        </Grid>
+
+        <!-- Downloads List -->
+        <RefreshView Grid.Row="1"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshDownloadsCommand}">
+            <CollectionView ItemsSource="{Binding ActiveDownloads}"
+                          SelectionMode="None"
+                          EmptyView="No active downloads">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="services:RemoteTorrentInfo">
+                        <Frame Padding="15" 
+                               Margin="0,5" 
+                               CornerRadius="10" 
+                               BorderColor="LightGray"
+                               BackgroundColor="White">
+                            <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto" 
+                                  ColumnDefinitions="*, Auto"
+                                  RowSpacing="8">
+                                
+                                <!-- Torrent Name -->
+                                <Label Grid.Row="0" 
+                                       Grid.Column="0" 
+                                       Grid.ColumnSpan="2"
+                                       Text="{Binding Name}" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold" 
+                                       LineBreakMode="WordWrap"/>
+                                
+                                <!-- Progress Bar -->
+                                <ProgressBar Grid.Row="1" 
+                                           Grid.Column="0" 
+                                           Grid.ColumnSpan="2"
+                                           Progress="{Binding Progress}" 
+                                           ProgressColor="{StaticResource Primary}"
+                                           HeightRequest="8"
+                                           Margin="0,5"/>
+                                
+                                <!-- Stats Row 1 -->
+                                <Grid Grid.Row="2" 
+                                      Grid.Column="0" 
+                                      Grid.ColumnSpan="2"
+                                      ColumnDefinitions="Auto, *, Auto">
+                                    
+                                    <Label Grid.Column="0"
+                                           FontSize="14">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding ProgressPercent}" 
+                                                      FontAttributes="Bold"
+                                                      TextColor="{StaticResource Primary}"/>
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+
+                                    <Label Grid.Column="2"
+                                           FontSize="14"
+                                           HorizontalOptions="End">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding DownloadedFormatted}"/>
+                                                <Span Text=" / "/>
+                                                <Span Text="{Binding SizeFormatted}"/>
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                </Grid>
+
+                                <!-- Stats Row 2 -->
+                                <Grid Grid.Row="3" 
+                                      Grid.Column="0" 
+                                      Grid.ColumnSpan="2"
+                                      ColumnDefinitions="*, *, *">
+                                    
+                                    <!-- Download Speed -->
+                                    <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                        <Label Text="↓ Download" 
+                                               FontSize="11" 
+                                               TextColor="Gray"/>
+                                        <Label Text="{Binding DownloadSpeedFormatted}" 
+                                               FontSize="13"
+                                               FontAttributes="Bold"
+                                               TextColor="Green"/>
+                                    </VerticalStackLayout>
+
+                                    <!-- Upload Speed -->
+                                    <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                        <Label Text="↑ Upload" 
+                                               FontSize="11" 
+                                               TextColor="Gray"/>
+                                        <Label Text="{Binding UploadSpeedFormatted}" 
+                                               FontSize="13"
+                                               FontAttributes="Bold"
+                                               TextColor="Orange"/>
+                                    </VerticalStackLayout>
+
+                                    <!-- ETA -->
+                                    <VerticalStackLayout Grid.Column="2" Spacing="2">
+                                        <Label Text="⏱ ETA" 
+                                               FontSize="11" 
+                                               TextColor="Gray"/>
+                                        <Label Text="{Binding EtaFormatted}" 
+                                               FontSize="13"
+                                               FontAttributes="Bold"
+                                               TextColor="Blue"/>
+                                    </VerticalStackLayout>
+                                </Grid>
+
+                                <!-- Action Buttons -->
+                                <Grid Grid.Row="4" 
+                                      Grid.Column="0" 
+                                      Grid.ColumnSpan="2"
+                                      ColumnDefinitions="*, *, *"
+                                      ColumnSpacing="5"
+                                      Margin="0,8,0,0">
+                                    
+                                    <!-- Pause/Resume Button -->
+                                    <Button Grid.Column="0"
+                                            Text="{Binding State, Converter={StaticResource StateToButtonTextConverter}}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DownloadsViewModel}}, Path=PauseTorrentCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#FF9800"
+                                            TextColor="White"
+                                            FontSize="12"
+                                            HeightRequest="35"/>
+
+                                    <!-- Resume Button (alternative) -->
+                                    <Button Grid.Column="1"
+                                            Text="▶ Resume"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DownloadsViewModel}}, Path=ResumeTorrentCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#4CAF50"
+                                            TextColor="White"
+                                            FontSize="12"
+                                            HeightRequest="35"
+                                            IsVisible="{Binding State, Converter={StaticResource StateToPausedConverter}}"/>
+
+                                    <!-- Delete Button -->
+                                    <Button Grid.Column="2"
+                                            Text="🗑 Delete"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DownloadsViewModel}}, Path=DeleteTorrentCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#F44336"
+                                            TextColor="White"
+                                            FontSize="12"
+                                            HeightRequest="35"/>
+                                </Grid>
+
+                                <!-- State Badge -->
+                                <Frame Grid.Row="0"
+                                       Grid.Column="1"
+                                       Padding="8,4"
+                                       CornerRadius="12"
+                                       BackgroundColor="{Binding State, Converter={StaticResource StateToColorConverter}}"
+                                       HasShadow="False"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="End">
+                                    <Label Text="{Binding State}" 
+                                           TextColor="White"
+                                           FontSize="11"
+                                           FontAttributes="Bold"/>
+                                </Frame>
+
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+    </Grid>
+</ContentPage>
