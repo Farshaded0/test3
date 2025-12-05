@@ -12,7 +12,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    # Force .NET 8 SDK to avoid .NET 10 Preview conflicts
+    # Force .NET 8 SDK
     - name: Create global.json
       run: |
         echo '{"sdk":{"version": "8.0.400", "rollForward": "latestFeature"}}' > global.json
@@ -28,14 +28,13 @@ jobs:
     - name: Restore Dependencies
       run: dotnet restore
 
-    # Publish with Trimming DISABLED to fix Xcode 15/iOS 18 mismatch
+    # FIXED: Removed 'PublishTrimmed=false' and kept 'MtouchLink=None'
     - name: Publish .NET MAUI iOS
       run: |
         dotnet publish -f net8.0-ios -c Release -r ios-arm64 \
         -p:ArchiveOnBuild=false \
         -p:EnableCodeSigning=false \
         -p:_RequiresIpaSigning=false \
-        -p:PublishTrimmed=false \
         -p:MtouchLink=None
 
     - name: Package into IPA
