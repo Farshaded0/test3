@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MauiScraperApp.Services;
@@ -39,21 +39,33 @@ public partial class ConnectionViewModel : ObservableObject
     [RelayCommand]
     private async Task ConnectAsync()
     {
-        if (string.IsNullOrWhiteSpace(ServerIp) || !int.TryParse(ServerPort, out int port))
+        if (string.IsNullOrWhiteSpace(ServerIp))
         {
             await Shell.Current.DisplayAlert("Error", "Invalid IP or Port", "OK");
             return;
         }
 
+        // Handle Port parsing safely
+        if (!int.TryParse(ServerPort, out int port)) port = 5000;
+
         try
         {
             IsConnecting = true;
             StatusMessage = "Connecting...";
-            if (await _remoteClient.ConnectAsync(ServerIp, port))
+            
+            // This runs on a background thread usually
+            bool success = await _remoteClient.ConnectAsync(ServerIp, port);
+
+            if (success)
             {
                 IsConnected = true;
                 StatusMessage = $"Connected to {ServerIp}:{port}";
-                await Shell.Current.GoToAsync("//MainTabs");
+                
+                // CRITICAL FIX FOR iOS: Force Navigation on Main Thread
+                MainThread.BeginInvokeOnMainThread(async () => 
+                {
+                    await Shell.Current.GoToAsync("//MainTabs");
+                });
             }
             else
             {
@@ -81,7 +93,6 @@ public partial class ConnectionViewModel : ObservableObject
             StatusMessage = "Scanning network...";
             DiscoveredServers.Clear();
 
-            // Explicitly typed to prevent compiler ambiguity
             List<string> servers = await _remoteClient.DiscoverServersAsync();
 
             foreach (var server in servers)
@@ -92,12 +103,10 @@ public partial class ConnectionViewModel : ObservableObject
             if (servers.Count > 0)
             {
                 StatusMessage = $"Found {servers.Count} server(s)";
-                await Shell.Current.DisplayAlert("Scan Complete", $"Found {servers.Count} server(s).", "OK");
             }
             else
             {
                 StatusMessage = "No servers found";
-                await Shell.Current.DisplayAlert("Scan Complete", "No servers found.", "OK");
             }
         }
         catch (Exception ex)
@@ -126,8 +135,15 @@ public partial class ConnectionViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task ContinueToApp()
+    private void ContinueToApp()
     {
-        if (IsConnected) await Shell.Current.GoToAsync("//MainTabs");
+        if (IsConnected)
+        {
+            // CRITICAL FIX FOR iOS: Force Navigation on Main Thread
+            MainThread.BeginInvokeOnMainThread(async () => 
+            {
+                await Shell.Current.GoToAsync("//MainTabs");
+            });
+        }
     }
 }
