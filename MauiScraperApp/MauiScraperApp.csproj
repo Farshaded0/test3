@@ -58,12 +58,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<MauiXaml Update="Views\ConnectionView.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Views\DownloadsView.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
 		<MauiXaml Update="Views\SearchView.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>

@@ -6,24 +6,10 @@
     xmlns:local="clr-namespace:MauiScraperApp.Views"
     FlyoutBehavior="Disabled">
 
-    <!-- 1. Connection Page (Start Here) -->
+    <!-- Single Page Application -->
     <ShellContent
-        Route="Connection"
-        ContentTemplate="{DataTemplate local:ConnectionView}" />
-
-    <!-- 2. Main App (Navigation Target) -->
-    <TabBar Route="MainTabs">
-        <ShellContent
-            Title="Search"
-            Icon="search.png"
-            Route="SearchView"
-            ContentTemplate="{DataTemplate local:SearchView}" />
-
-        <ShellContent
-            Title="Downloads"
-            Icon="download.png"
-            Route="DownloadsView"
-            ContentTemplate="{DataTemplate local:DownloadsView}" />
-    </TabBar>
+        Title="Search"
+        Route="SearchView"
+        ContentTemplate="{DataTemplate local:SearchView}" />
 
 </Shell>

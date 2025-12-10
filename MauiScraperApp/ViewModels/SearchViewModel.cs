@@ -9,12 +9,9 @@ namespace MauiScraperApp.ViewModels;
 public partial class SearchViewModel : ObservableObject
 {
     private readonly WebScrapingService _scraper;
-    private readonly RemoteClientService _remote;
 
     [ObservableProperty] private string _searchQuery;
     [ObservableProperty] private bool _isLoading;
-    [ObservableProperty] private bool _isSendingToRemote;
-    [ObservableProperty] private bool _isConnected;
 
     // Site Selection
     [ObservableProperty] private string _selectedSite = "1337x";
@@ -33,24 +30,11 @@ public partial class SearchViewModel : ObservableObject
         new SortOption { Name = "Seeders (Most)", Value = "seeders" }
     };
 
-    // Wizard Properties
-    [ObservableProperty] private bool _isDownloadWizardVisible;
-    [ObservableProperty] private bool _isManualPathEnabled;
-    [ObservableProperty] private string _manualPathText;
-    [ObservableProperty] private SearchResult _selectedItem;
-    [ObservableProperty] private DriveInfoModel _selectedDrive;
-    [ObservableProperty] private string _selectedPathCategory;
-
     public ObservableCollection<SearchResult> Results { get; } = new();
-    public ObservableCollection<DriveInfoModel> Drives { get; } = new();
-    public ObservableCollection<string> PathCategories { get; } = new() {
-        "Animated Movies", "Animated shows", "Documentary", "Horror", "Mom Films", "Mom Tv Shows", "Movies", "Tv shows", "Misc"
-    };
 
-    public SearchViewModel(WebScrapingService s, RemoteClientService r)
+    public SearchViewModel(WebScrapingService s)
     {
-        _scraper = s; _remote = r;
-        IsConnected = _remote.IsConnected;
+        _scraper = s;
         SelectedSortOption = SortOptions[0]; // Default to Time
         UpdateCategories(); 
     }
@@ -97,13 +81,9 @@ public partial class SearchViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void CheckConnection() => IsConnected = _remote.IsConnected;
-
-    [RelayCommand]
     private async Task PerformSearchAsync()
     {
         if (IsLoading) return;
-        IsConnected = _remote.IsConnected;
 
         IsLoading = true;
         Results.Clear();
@@ -129,56 +109,34 @@ public partial class SearchViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task OpenWizard(SearchResult item)
+    private async Task CopyMagnetLink(SearchResult item)
     {
-        if (!_remote.IsConnected) { await Shell.Current.DisplayAlert("Error", "Connect to PC first", "OK"); return; }
+        if (item == null) return;
         
-        SelectedItem = item;
-        IsDownloadWizardVisible = true;
-        IsManualPathEnabled = false;
-        ManualPathText = "";
-        SelectedPathCategory = "Movies";
-
-        try {
-            var d = await _remote.GetDrives();
-            Drives.Clear();
-            foreach(var x in d) Drives.Add(x);
-            if(Drives.Any()) SelectedDrive = Drives[0];
-        } catch { }
-    }
-
-    [RelayCommand]
-    private async Task ConfirmDownload()
-    {
-        if (SelectedItem == null) return;
-        
-        string finalPath;
-        if (IsManualPathEnabled)
+        try
         {
-            if (string.IsNullOrWhiteSpace(ManualPathText)) { await Shell.Current.DisplayAlert("Error", "Enter a path", "OK"); return; }
-            finalPath = ManualPathText;
-        }
-        else
-        {
-            if (SelectedDrive == null) return;
-            finalPath = PathResolver.GetPath(SelectedDrive.Name, SelectedPathCategory);
-        }
-
-        IsDownloadWizardVisible = false;
-        IsSendingToRemote = true;
-
-        try {
-            string magnet = await _scraper.GetMagnetLinkAsync(SelectedItem);
-            if(string.IsNullOrEmpty(magnet)) throw new Exception("Magnet not found");
-
-            if(await _remote.AddTorrentAsync(magnet, finalPath))
-                await Shell.Current.DisplayAlert("Success", $"Added to:\n{finalPath}", "OK");
+            IsLoading = true;
+            string magnet = await _scraper.GetMagnetLinkAsync(item);
+            
+            if (!string.IsNullOrEmpty(magnet))
+            {
+                await Clipboard.SetTextAsync(magnet);
+                await Shell.Current.DisplayAlert("Success", "Magnet link copied to clipboard!", "OK");
+            }
             else
-                throw new Exception("Failed to send to qBittorrent");
-        } 
-        catch (Exception ex) { await Shell.Current.DisplayAlert("Error", ex.Message, "OK"); }
-        finally { IsSendingToRemote = false; SelectedItem = null; }
+            {
+                await Shell.Current.DisplayAlert("Error", "Could not retrieve magnet link.", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
-    [RelayCommand] void CancelWizard() { IsDownloadWizardVisible = false; SelectedItem = null; }
+
 }

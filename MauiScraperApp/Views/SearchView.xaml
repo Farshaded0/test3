@@ -10,10 +10,7 @@
 
     <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, *" Padding="10">
 
-        <!-- 1. Connection Status -->
-        <Frame Grid.Row="0" Padding="10" Margin="0,0,0,10" CornerRadius="5" BackgroundColor="{Binding IsConnected, Converter={StaticResource ConnectionStatusColorConverter}}">
-            <Label Text="{Binding IsConnected, Converter={StaticResource ConnectionStatusTextConverter}}" TextColor="White" HorizontalOptions="Center"/>
-        </Frame>
+
 
         <!-- 2. Search Controls (Site & Category) -->
         <Grid Grid.Row="1" ColumnDefinitions="*, *" ColumnSpacing="5" Margin="0,0,0,5">
@@ -44,8 +41,8 @@
                                 <Label Text="{Binding Site}" TextColor="Blue" FontSize="10"/>
                             </VerticalStackLayout>
 
-                            <Button Grid.Row="2" Grid.ColumnSpan="2" Text="📥 Send to PC" 
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SearchViewModel}}, Path=OpenWizardCommand}"
+                            <Button Grid.Row="2" Grid.ColumnSpan="2" Text="📋 Copy Magnet Link" 
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SearchViewModel}}, Path=CopyMagnetLinkCommand}"
                                     CommandParameter="{Binding .}" Margin="0,5,0,0"/>
                         </Grid>
                     </Frame>
@@ -53,56 +50,6 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <!-- WIZARD OVERLAY -->
-        <Grid Grid.RowSpan="6" BackgroundColor="#AA000000" IsVisible="{Binding IsDownloadWizardVisible}" ZIndex="99" Padding="20">
-            <Frame VerticalOptions="Center" BackgroundColor="{AppThemeBinding Light=White, Dark=#252526}" CornerRadius="15">
-                <VerticalStackLayout Spacing="15">
-                    <Label Text="Download Setup" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center"/>
-                    <Label Text="{Binding SelectedItem.Title}" LineBreakMode="TailTruncation" TextColor="Gray" FontSize="12"/>
 
-                    <!-- Toggle Manual Path -->
-                    <Grid ColumnDefinitions="*, Auto">
-                        <Label Text="Manual Path Override" VerticalOptions="Center"/>
-                        <Switch Grid.Column="1" IsToggled="{Binding IsManualPathEnabled}"/>
-                    </Grid>
-
-                    <!-- OPTION A: Drive/Cat Selector -->
-                    <VerticalStackLayout IsVisible="{Binding IsManualPathEnabled, Converter={StaticResource InverseBoolConverter}}" Spacing="10">
-                        <Label Text="Select Drive:" FontAttributes="Bold"/>
-                        <CollectionView ItemsSource="{Binding Drives}" SelectionMode="Single" SelectedItem="{Binding SelectedDrive}" HeightRequest="100">
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate x:DataType="s:DriveInfoModel">
-                                    <Grid Padding="5">
-                                        <VisualStateManager.VisualStateGroups>
-                                            <VisualStateGroup Name="CommonStates">
-                                                <VisualState Name="Normal" />
-                                                <VisualState Name="Selected">
-                                                    <VisualState.Setters><Setter Property="BackgroundColor" Value="#BBDEFB" /></VisualState.Setters>
-                                                </VisualState>
-                                            </VisualStateGroup>
-                                        </VisualStateManager.VisualStateGroups>
-                                        <Label Text="{Binding DisplayName}" FontAttributes="Bold"/>
-                                        <Label Text="{Binding UsageText}" HorizontalOptions="End" FontSize="10"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
-                        <Picker Title="Category" ItemsSource="{Binding PathCategories}" SelectedItem="{Binding SelectedPathCategory}"/>
-                    </VerticalStackLayout>
-
-                    <!-- OPTION B: Manual Entry -->
-                    <VerticalStackLayout IsVisible="{Binding IsManualPathEnabled}" Spacing="5">
-                        <Label Text="Enter Full Path:" FontAttributes="Bold"/>
-                        <Entry Placeholder="C:\Users\Downloads\MyFolder" Text="{Binding ManualPathText}"/>
-                    </VerticalStackLayout>
-
-                    <!-- Actions -->
-                    <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
-                        <Button Text="Cancel" Command="{Binding CancelWizardCommand}" BackgroundColor="Gray"/>
-                        <Button Text="Download" Command="{Binding ConfirmDownloadCommand}" BackgroundColor="{StaticResource Primary}"/>
-                    </Grid>
-                </VerticalStackLayout>
-            </Frame>
-        </Grid>
     </Grid>
 </ContentPage>
