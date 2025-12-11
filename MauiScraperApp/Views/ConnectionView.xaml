@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MauiScraperApp.ViewModels"
+             x:Class="MauiScraperApp.Views.ConnectionView"
+             x:DataType="vm:ConnectionViewModel"
+             Title="Connection">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="30">
+
+            <Image Source="dotnet_bot.png" HeightRequest="150" HorizontalOptions="Center" />
+
+            <Label Text="qBittorrent Remote Bridge" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
+
+            <!-- Status Indicator -->
+            <Label Text="{Binding StatusMessage}" FontSize="16" TextColor="{Binding IsConnected, Converter={StaticResource ConnectionStatusColorConverter}}" HorizontalOptions="Center" FontAttributes="Bold"/>
+
+            <Frame Padding="20" CornerRadius="10" BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#252526}">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="Server Settings" FontAttributes="Bold" />
+                    
+                    <Entry Placeholder="IP Address (e.g., 192.168.1.50)" Text="{Binding ServerIp}" Keyboard="Url" />
+                    <Entry Placeholder="Port (Default: 5000)" Text="{Binding ServerPort}" Keyboard="Numeric" />
+
+                    <Button Text="{Binding IsConnecting, Converter={StaticResource StateToButtonTextConverter}, ConverterParameter='Connect'}" 
+                            Command="{Binding ConnectCommand}" 
+                            IsEnabled="{Binding IsConnecting, Converter={StaticResource InverseBoolConverter}}"
+                            BackgroundColor="{StaticResource Primary}"/>
+
+                     <Button Text="Disconnect" 
+                            Command="{Binding DisconnectCommand}" 
+                            BackgroundColor="Red"
+                            IsVisible="{Binding IsConnected}"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <Button Text="Scan Network" Command="{Binding ScanNetworkCommand}" BackgroundColor="{StaticResource Secondary}" />
+
+            <ActivityIndicator IsRunning="{Binding IsScanning}" IsVisible="{Binding IsScanning}" Color="{StaticResource Primary}" />
+
+            <CollectionView ItemsSource="{Binding DiscoveredServers}" HeightRequest="200">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Margin="0,5" Padding="10">
+                            <Grid ColumnDefinitions="*, Auto">
+                                <Label Text="{Binding .}" VerticalOptions="Center" FontAttributes="Bold"/>
+                                <Button Grid.Column="1" Text="Select" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ConnectionViewModel}}, Path=SelectServerCommand}" CommandParameter="{Binding .}" HeightRequest="40"/>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

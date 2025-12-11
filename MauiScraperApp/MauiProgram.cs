@@ -64,9 +64,15 @@ public static class MauiProgram
 
         builder.Services.AddSingleton<WebScrapingService>(sp => 
             new WebScrapingService(sp.GetRequiredService<IHttpClientFactory>().CreateClient("Scraper")));
+        builder.Services.AddSingleton<RemoteClientService>();
 
         builder.Services.AddTransient<SearchViewModel>();
+        builder.Services.AddTransient<DownloadsViewModel>();
+        builder.Services.AddTransient<ConnectionViewModel>();
+
         builder.Services.AddTransient<SearchView>();
+        builder.Services.AddTransient<DownloadsView>();
+        builder.Services.AddTransient<ConnectionView>();
 
         return builder.Build();
     }
