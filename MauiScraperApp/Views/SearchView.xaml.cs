@@ -12,6 +12,11 @@ public partial class SearchView : ContentView
     }
     private void OnSearchButtonPressed(object sender, EventArgs e)
     {
+        // Force unfocus 
         TheSearchBar.Unfocus();
+        // Dispatch to ensure it stays down after command execution
+        Dispatcher.Dispatch(() => {
+            TheSearchBar.Unfocus();
+        });
     }
 }
