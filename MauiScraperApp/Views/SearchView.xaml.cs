@@ -10,4 +10,8 @@ public partial class SearchView : ContentView
         InitializeComponent();
         BindingContext = viewModel;
     }
+    private void OnSearchButtonPressed(object sender, EventArgs e)
+    {
+        TheSearchBar.Unfocus();
+    }
 }
