@@ -96,8 +96,8 @@
 
                     <!-- Actions -->
                     <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
-                        <Button Text="Cancel" Command="{Binding CancelWizardCommand}" BackgroundColor="#D32F2F" TextColor="White" Margin="0,0,5,0"/>
-                        <Button Text="Download" Command="{Binding ConfirmDownloadCommand}" BackgroundColor="{StaticResource Primary}" Margin="5,0,0,0"/>
+                        <Button Grid.Column="0" Text="Download" Command="{Binding ConfirmDownloadCommand}" BackgroundColor="{StaticResource Primary}"/>
+                        <Button Grid.Column="1" Text="Cancel" Command="{Binding CancelWizardCommand}" BackgroundColor="#D32F2F" TextColor="White"/>
                     </Grid>
                 </VerticalStackLayout>
             </Frame>

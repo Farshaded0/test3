@@ -71,7 +71,13 @@ public partial class SearchViewModel : ObservableObject
     public bool IsMikaylaMode
     {
         get => _isMikaylaMode;
-        set => SetProperty(ref _isMikaylaMode, value);
+        set
+        {
+            if (SetProperty(ref _isMikaylaMode, value))
+            {
+                UpdatePathCategories();
+            }
+        }
     }
 
     private SearchResult _selectedItem;
@@ -97,9 +103,24 @@ public partial class SearchViewModel : ObservableObject
 
     public ObservableCollection<SearchResult> Results { get; } = new();
     public ObservableCollection<DriveInfoModel> Drives { get; } = new();
-    public ObservableCollection<string> PathCategories { get; } = new() {
+    public ObservableCollection<string> PathCategories { get; } = new();
+
+    private readonly List<string> _allPathCategories = new() {
         "Animated Movies", "Animated shows", "Documentary", "Horror", "Mom Films", "Mom Tv Shows", "Movies", "Tv shows", "Misc"
     };
+
+    private readonly List<string> _mikaylaPathCategories = new() {
+        "Tv shows", "Movies", "Documentary", "Animated shows", "Animated Movies"
+    };
+
+    private void UpdatePathCategories()
+    {
+        PathCategories.Clear();
+        var source = IsMikaylaMode ? _mikaylaPathCategories : _allPathCategories;
+        foreach(var c in source) PathCategories.Add(c);
+        
+        if (PathCategories.Any()) SelectedPathCategory = PathCategories[0];
+    }
 
     public SearchViewModel(WebScrapingService s, RemoteClientService r)
     {
@@ -107,6 +128,7 @@ public partial class SearchViewModel : ObservableObject
         IsConnected = _remote.IsConnected;
         SelectedSortOption = SortOptions[0]; // Default to Time
         UpdateCategories(); 
+        UpdatePathCategories();
     }
 
     partial void OnSelectedSiteChanged(string value) => UpdateCategories();
