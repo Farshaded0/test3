@@ -14,7 +14,14 @@ public partial class SearchViewModel : ObservableObject
     [ObservableProperty] private string _searchQuery;
     [ObservableProperty] private bool _isLoading;
     [ObservableProperty] private bool _isSendingToRemote;
-    [ObservableProperty] private bool _isConnected;
+    
+    // Explicit Property for IsConnected to fix build error
+    private bool _isConnected;
+    public bool IsConnected
+    {
+        get => _isConnected;
+        set => SetProperty(ref _isConnected, value);
+    }
 
     // Site Selection
     [ObservableProperty] private string _selectedSite = "1337x";
@@ -33,13 +40,48 @@ public partial class SearchViewModel : ObservableObject
         new SortOption { Name = "Seeders (Most)", Value = "seeders" }
     };
 
-    // Wizard Properties
-    [ObservableProperty] private bool _isDownloadWizardVisible;
-    [ObservableProperty] private bool _isManualPathEnabled;
-    [ObservableProperty] private string _manualPathText;
-    [ObservableProperty] private SearchResult _selectedItem;
-    [ObservableProperty] private DriveInfoModel _selectedDrive;
-    [ObservableProperty] private string _selectedPathCategory;
+    // Wizard Properties - Explicit to fix build errors
+    private bool _isDownloadWizardVisible;
+    public bool IsDownloadWizardVisible
+    {
+        get => _isDownloadWizardVisible;
+        set => SetProperty(ref _isDownloadWizardVisible, value);
+    }
+
+    private bool _isManualPathEnabled;
+    public bool IsManualPathEnabled
+    {
+        get => _isManualPathEnabled;
+        set => SetProperty(ref _isManualPathEnabled, value);
+    }
+
+    private string _manualPathText;
+    public string ManualPathText
+    {
+        get => _manualPathText;
+        set => SetProperty(ref _manualPathText, value);
+    }
+
+    private SearchResult _selectedItem;
+    public SearchResult SelectedItem
+    {
+        get => _selectedItem;
+        set => SetProperty(ref _selectedItem, value);
+    }
+
+    private DriveInfoModel _selectedDrive;
+    public DriveInfoModel SelectedDrive
+    {
+        get => _selectedDrive;
+        set => SetProperty(ref _selectedDrive, value);
+    }
+
+    private string _selectedPathCategory;
+    public string SelectedPathCategory
+    {
+        get => _selectedPathCategory;
+        set => SetProperty(ref _selectedPathCategory, value);
+    }
 
     public ObservableCollection<SearchResult> Results { get; } = new();
     public ObservableCollection<DriveInfoModel> Drives { get; } = new();
