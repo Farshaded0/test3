@@ -67,6 +67,13 @@ public partial class SearchViewModel : ObservableObject
         set => SetProperty(ref _manualPathText, value);
     }
 
+    private bool _isMikaylaMode;
+    public bool IsMikaylaMode
+    {
+        get => _isMikaylaMode;
+        set => SetProperty(ref _isMikaylaMode, value);
+    }
+
     private SearchResult _selectedItem;
     public SearchResult SelectedItem
     {
@@ -212,7 +219,20 @@ public partial class SearchViewModel : ObservableObject
         else
         {
             if (SelectedDrive == null) return;
-            finalPath = PathResolver.GetPath(SelectedDrive.Name, SelectedPathCategory);
+
+            if (IsMikaylaMode)
+            {
+                // MIKAYLA MODE HARDCODED LOGIC
+                string driveLetter = SelectedDrive.Name.Substring(0, 1).ToUpper(); // "C", "D", "E"
+                string category = SelectedPathCategory;
+                
+                finalPath = GetMikaylaPath(driveLetter, category);
+            }
+            else
+            {
+                // Normal Logic
+                finalPath = PathResolver.GetPath(SelectedDrive.Name, SelectedPathCategory);
+            }
         }
 
         IsDownloadWizardVisible = false;

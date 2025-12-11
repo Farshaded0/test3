@@ -20,7 +20,7 @@
         <Picker Grid.Row="2" Title="Sort By" ItemsSource="{Binding SortOptions}" SelectedItem="{Binding SelectedSortOption}" ItemDisplayBinding="{Binding Name}" Margin="0,0,0,5"/>
 
         <!-- 4. Search Bar -->
-        <SearchBar Grid.Row="3" Placeholder="Search torrents..." Text="{Binding SearchQuery}" SearchCommand="{Binding PerformSearchCommand}" Margin="0,0,0,10"/>
+        <SearchBar x:Name="TheSearchBar" Grid.Row="3" Placeholder="Search torrents..." Text="{Binding SearchQuery}" SearchCommand="{Binding PerformSearchCommand}" SearchButtonPressed="OnSearchButtonPressed" Margin="0,0,0,10"/>
 
         <!-- 5. Loading -->
         <ActivityIndicator Grid.Row="4" IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}" HorizontalOptions="Center"/>
@@ -56,9 +56,12 @@
                     <Label Text="{Binding SelectedItem.Title}" LineBreakMode="TailTruncation" TextColor="Gray" FontSize="12"/>
 
                     <!-- Toggle Manual Path -->
-                    <Grid ColumnDefinitions="*, Auto">
-                        <Label Text="Manual Path Override" VerticalOptions="Center"/>
-                        <Switch Grid.Column="1" IsToggled="{Binding IsManualPathEnabled}"/>
+                    <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
+                        <Label Grid.Row="0" Grid.Column="0" Text="Manual Path Override" VerticalOptions="Center"/>
+                        <Switch Grid.Row="0" Grid.Column="1" IsToggled="{Binding IsManualPathEnabled}"/>
+                        
+                        <Label Grid.Row="1" Grid.Column="0" Text="User Mikayla" VerticalOptions="Center" TextColor="#FF69B4" FontAttributes="Bold"/>
+                        <Switch Grid.Row="1" Grid.Column="1" IsToggled="{Binding IsMikaylaMode}" ThumbColor="#FF69B4" OnColor="#FFB6C1"/>
                     </Grid>
 
                     <!-- OPTION A: Drive/Cat Selector -->
@@ -93,8 +96,8 @@
 
                     <!-- Actions -->
                     <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
-                        <Button Text="Cancel" Command="{Binding CancelWizardCommand}" BackgroundColor="Gray"/>
-                        <Button Text="Download" Command="{Binding ConfirmDownloadCommand}" BackgroundColor="{StaticResource Primary}"/>
+                        <Button Text="Cancel" Command="{Binding CancelWizardCommand}" BackgroundColor="#D32F2F" TextColor="White" Margin="0,0,5,0"/>
+                        <Button Text="Download" Command="{Binding ConfirmDownloadCommand}" BackgroundColor="{StaticResource Primary}" Margin="5,0,0,0"/>
                     </Grid>
                 </VerticalStackLayout>
             </Frame>
