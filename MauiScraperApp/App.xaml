@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:MauiScraperApp"
              xmlns:converters="clr-namespace:MauiScraperApp.Converters"
+             xmlns:resources="clr-namespace:MauiScraperApp.Resources"
              x:Class="MauiScraperApp.App">
     <Application.Resources>
         <ResourceDictionary>
@@ -17,6 +18,7 @@
             <converters:StateToColorConverter x:Key="StateToColorConverter" />
             <converters:StateToButtonTextConverter x:Key="StateToButtonTextConverter" />
             <converters:StateToPausedConverter x:Key="StateToPausedConverter" />
+            <resources:TabColorConverter x:Key="TabColorConverter" />
 
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
