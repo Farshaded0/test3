@@ -1,12 +1,10 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:MauiScraperApp.ViewModels"
              xmlns:m="clr-namespace:MauiScraperApp.Models"
              xmlns:s="clr-namespace:MauiScraperApp.Services"
              x:Class="MauiScraperApp.Views.SearchView"
-             x:DataType="vm:SearchViewModel"
-             Title="Search">
+             x:DataType="vm:SearchViewModel">
 
     <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, *" Padding="10">
 
@@ -103,4 +101,4 @@
         </Grid>
 
     </Grid>
-</ContentPage>
+</ContentView>

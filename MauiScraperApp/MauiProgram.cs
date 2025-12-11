@@ -66,13 +66,17 @@ public static class MauiProgram
             new WebScrapingService(sp.GetRequiredService<IHttpClientFactory>().CreateClient("Scraper")));
         builder.Services.AddSingleton<RemoteClientService>();
 
-        builder.Services.AddTransient<SearchViewModel>();
-        builder.Services.AddTransient<DownloadsViewModel>();
-        builder.Services.AddTransient<ConnectionViewModel>();
+        // ViewModels - Singleton to keep state when switching "Tabs"
+        builder.Services.AddSingleton<SearchViewModel>();
+        builder.Services.AddSingleton<DownloadsViewModel>();
+        builder.Services.AddSingleton<ConnectionViewModel>();
+        builder.Services.AddSingleton<MainContainerViewModel>();
 
-        builder.Services.AddTransient<SearchView>();
-        builder.Services.AddTransient<DownloadsView>();
-        builder.Services.AddTransient<ConnectionView>();
+        // Views - Singleton usually okay for ContentView custom nav
+        builder.Services.AddSingleton<SearchView>();
+        builder.Services.AddSingleton<DownloadsView>();
+        builder.Services.AddSingleton<ConnectionView>();
+        builder.Services.AddSingleton<MainContainerView>();
 
         return builder.Build();
     }

@@ -3,7 +3,7 @@ using MauiScraperApp.ViewModels;
 
 namespace MauiScraperApp.Views;
 
-public partial class SearchView : ContentPage
+public partial class SearchView : ContentView
 {
     public SearchView(SearchViewModel viewModel)
     {

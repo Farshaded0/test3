@@ -2,9 +2,9 @@ using MauiScraperApp.ViewModels;
 
 namespace MauiScraperApp.Views;
 
-public partial class ConnectionView : ContentView
+public partial class MainContainerView : ContentPage
 {
-	public ConnectionView(ConnectionViewModel viewModel)
+	public MainContainerView(MainContainerViewModel viewModel)
 	{
 		InitializeComponent();
 		BindingContext = viewModel;

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MauiScraperApp.ViewModels"
+             x:Class="MauiScraperApp.Views.MainContainerView"
+             x:DataType="vm:MainContainerViewModel"
+             Title="{Binding CurrentTitle}">
+
+    <Grid RowDefinitions="*, Auto" BackgroundColor="{AppThemeBinding Light=White, Dark=#121212}">
+        
+        <!-- CONTENT AREA -->
+        <ContentView Grid.Row="0" Content="{Binding CurrentView}" />
+
+        <!-- CUSTOM TAB BAR -->
+        <Grid Grid.Row="1" ColumnDefinitions="*, *, *" HeightRequest="60" BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#1E1E1E}">
+            <Grid.Shadow>
+                <Shadow Brush="Black" Offset="0,-5" Opacity="0.1" Radius="10"/>
+            </Grid.Shadow>
+
+            <!-- Search Tab -->
+            <VerticalStackLayout Grid.Column="0" VerticalOptions="Center" Spacing="2">
+                 <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding NavigateToSearchCommand}"/>
+                </VerticalStackLayout.GestureRecognizers>
+                <Image Source="search.png" HeightRequest="24" WidthRequest="24">
+                     <Image.Behaviors>
+                        <IconTintColorBehavior Color="{Binding IsSearchActive, Converter={StaticResource TabColorConverter}}" />
+                    </Image.Behaviors>
+                </Image>
+                <Label Text="Search" FontSize="10" HorizontalOptions="Center" TextColor="{Binding IsSearchActive, Converter={StaticResource TabColorConverter}}"/>
+            </VerticalStackLayout>
+
+            <!-- Downloads Tab -->
+            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding NavigateToDownloadsCommand}"/>
+                </VerticalStackLayout.GestureRecognizers>
+                <Image Source="download.png" HeightRequest="24" WidthRequest="24">
+                     <Image.Behaviors>
+                        <IconTintColorBehavior Color="{Binding IsDownloadsActive, Converter={StaticResource TabColorConverter}}" />
+                    </Image.Behaviors>
+                </Image>
+                <Label Text="Downloads" FontSize="10" HorizontalOptions="Center" TextColor="{Binding IsDownloadsActive, Converter={StaticResource TabColorConverter}}"/>
+            </VerticalStackLayout>
+
+            <!-- Connection Tab -->
+            <VerticalStackLayout Grid.Column="2" VerticalOptions="Center" Spacing="2">
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding NavigateToConnectionCommand}"/>
+                </VerticalStackLayout.GestureRecognizers>
+                <Image Source="settings.png" HeightRequest="24" WidthRequest="24">
+                     <Image.Behaviors>
+                        <IconTintColorBehavior Color="{Binding IsConnectionActive, Converter={StaticResource TabColorConverter}}" />
+                    </Image.Behaviors>
+                </Image>
+                <Label Text="Connection" FontSize="10" HorizontalOptions="Center" TextColor="{Binding IsConnectionActive, Converter={StaticResource TabColorConverter}}"/>
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
+</ContentPage>
