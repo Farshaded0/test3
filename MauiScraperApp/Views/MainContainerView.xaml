@@ -25,7 +25,7 @@
                 </VerticalStackLayout.GestureRecognizers>
                 <Image Source="search.png" HeightRequest="24" WidthRequest="24">
                      <Image.Behaviors>
-                        <toolkit:IconTintColorBehavior Color="{Binding IsSearchActive, Converter={StaticResource TabColorConverter}}" />
+                        <toolkit:IconTintColorBehavior TintColor="{Binding IsSearchActive, Converter={StaticResource TabColorConverter}}" />
                     </Image.Behaviors>
                 </Image>
                 <Label Text="Search" FontSize="10" HorizontalOptions="Center" TextColor="{Binding IsSearchActive, Converter={StaticResource TabColorConverter}}"/>
@@ -38,7 +38,7 @@
                 </VerticalStackLayout.GestureRecognizers>
                 <Image Source="download.png" HeightRequest="24" WidthRequest="24">
                      <Image.Behaviors>
-                        <toolkit:IconTintColorBehavior Color="{Binding IsDownloadsActive, Converter={StaticResource TabColorConverter}}" />
+                        <toolkit:IconTintColorBehavior TintColor="{Binding IsDownloadsActive, Converter={StaticResource TabColorConverter}}" />
                     </Image.Behaviors>
                 </Image>
                 <Label Text="Downloads" FontSize="10" HorizontalOptions="Center" TextColor="{Binding IsDownloadsActive, Converter={StaticResource TabColorConverter}}"/>
@@ -51,7 +51,7 @@
                 </VerticalStackLayout.GestureRecognizers>
                 <Image Source="settings.png" HeightRequest="24" WidthRequest="24">
                      <Image.Behaviors>
-                        <toolkit:IconTintColorBehavior Color="{Binding IsConnectionActive, Converter={StaticResource TabColorConverter}}" />
+                        <toolkit:IconTintColorBehavior TintColor="{Binding IsConnectionActive, Converter={StaticResource TabColorConverter}}" />
                     </Image.Behaviors>
                 </Image>
                 <Label Text="Connection" FontSize="10" HorizontalOptions="Center" TextColor="{Binding IsConnectionActive, Converter={StaticResource TabColorConverter}}"/>
