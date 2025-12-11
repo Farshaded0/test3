@@ -13,7 +13,12 @@ public partial class SearchViewModel : ObservableObject
 
     [ObservableProperty] private string _searchQuery;
     [ObservableProperty] private bool _isLoading;
-    [ObservableProperty] private bool _isSendingToRemote;
+    private bool _isSendingToRemote;
+    public bool IsSendingToRemote
+    {
+        get => _isSendingToRemote;
+        set => SetProperty(ref _isSendingToRemote, value);
+    }
     
     // Explicit Property for IsConnected to fix build error
     private bool _isConnected;
