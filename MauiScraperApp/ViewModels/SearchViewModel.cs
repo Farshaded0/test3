@@ -254,4 +254,43 @@ public partial class SearchViewModel : ObservableObject
     [RelayCommand] void CancelWizard() { IsDownloadWizardVisible = false; SelectedItem = null; }
 
 
+    private string GetMikaylaPath(string drive, string category)
+    {
+        // Default fallbacks in case of unexpected input
+        string basePath = $@"{drive}:\HDD 1 Jellyfin\Mik {category}";
+
+        if (category == "Animated Movies")
+        {
+            if (drive == "E") return @"E:\HDD 2 Jellyfin\Mik animated movies";
+            if (drive == "C") return @"C:\SSD Jellyfin\Mik animated movies";
+            if (drive == "D") return @"D:\HDD 1 Jellyfin\Mik animated movies";
+        }
+        else if (category == "Animated shows")
+        {
+            if (drive == "C") return @"C:\SSD Jellyfin\Mik animated ssd";
+            if (drive == "E") return @"E:\HDD 2 Jellyfin\Mik animated shows";
+            if (drive == "D") return @"D:\HDD 1 Jellyfin\Mik animated shows 2";
+        }
+        else if (category == "Documentary")
+        {
+            if (drive == "D") return @"D:\HDD 1 Jellyfin\Mik Documentary";
+            if (drive == "E") return @"E:\HDD 2 Jellyfin\Mik Documentary";
+            if (drive == "C") return @"C:\SSD Jellyfin\Mik Documentary";
+        }
+        else if (category == "Movies") // Case sensitive matching to PathCategories list
+        {
+            if (drive == "C") return @"C:\SSD Jellyfin\Mik movies ssd";
+            if (drive == "D") return @"D:\HDD 1 Jellyfin\Mik movies";
+            if (drive == "E") return @"E:\HDD 2 Jellyfin\Mik movies 2";
+        }
+        else if (category == "Tv shows")
+        {
+            if (drive == "D") return @"D:\HDD 1 Jellyfin\Mik tv shows";
+            if (drive == "E") return @"E:\HDD 2 Jellyfin\Mik tv shows 2";
+            if (drive == "C") return @"C:\SSD Jellyfin\Mik tv shows ssd";
+        }
+
+        return basePath; // Fallback
+    }
+
 }
